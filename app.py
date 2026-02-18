@@ -49,7 +49,6 @@ def rechercher():
     # On récupère ce que l'utilisateur a tapé dans la barre
     requete = request.args.get('q', '').strip()
     resultats = []
-
     if requete:
         conn = get_db()
         # On cherche dans la table users (nom_utilisateur ou display_name)
@@ -58,7 +57,6 @@ def rechercher():
         conn.close()
 
     return render_template('recherche.html', resultats=resultats, mot_cle=requete)
-
 
 def utcnow_iso() -> str:
     return datetime.utcnow().isoformat(timespec="seconds") + "Z"
@@ -414,6 +412,7 @@ def create_app() -> Flask:
             (limit,),
         )
         return jsonify({"ok": True, "posts": [dict(r) for r in rows]})
+    
 
     # ---------- CLI ----------
 
@@ -593,6 +592,17 @@ def create_app() -> Flask:
         for uid, content, img in posts:
             db_execute("INSERT INTO posts(user_id, content, image_filename, created_at) VALUES (?, ?, ?, ?)",
                        (uid, content, img, utcnow_iso()))
+    # MINE 
+    @app.get("/stats-mine")
+    @login_required
+    def stats_mine():
+    # Action : READ (Lire)
+    # On compte le nombre total d'utilisateurs dans la base
+        resultat = db_one("SELECT COUNT(*) as total FROM users")
+        nombre_utilisateurs = resultat['total']
+    
+        return f"<h1>Rapport de la Mine</h1><p>Il y a actuellement <b>{nombre_utilisateurs}</b> bâtisseurs debout sur PH FIRE AFRICA !</p>"
+
 
     # run demo seed once (only when empty)
     @app.before_request
