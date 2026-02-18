@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="color: #f1c40f;">🔍 RECHERCHE DE BÂTISSEURS</h2>
+    
+    <!-- Formulaire de recherche -->
+    <form action="/rechercher" method="GET" style="margin-bottom: 30px;">
+        <input type="text" name="q" value="{{ mot_cle }}" placeholder="Nom du bâtisseur..." 
+               style="padding: 12px; width: 60%; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: white;">
+        <button type="submit" style="background: #f1c40f; color: black; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            Chercher
+        </button>
+    </form>
+
+    <div class="grid">
+        {% for u in resultats %}
+            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: #1e1e1a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="text-align: left;">
+                    <b style="font-size: 1.1em;">{{ u['display_name'] }}</b> <br>
+                    <small class="muted">@{{ u['username'] }}</small>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <!-- BOUTON D'ABONNEMENT (Action POST sécurisée) -->
+                    <form method="post" action="{{ url_for('toggle_follow', username=u['username']) }}">
+                        <button class="btn" type="submit" style="padding: 8px 15px; font-size: 0.85em; background: #ff2d8d; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            🤝 S'abonner / Se désabonner
+                        </button>
+                    </form>
+                    
+                    <a href="{{ url_for('profile', username=u['username']) }}" class="btn btn-ghost" style="padding: 8px 15px; font-size: 0.85em; border: 1px solid #444; border-radius: 8px;">
+                        👤 Profil
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <!-- Si la liste est vide -->
+            {% if mot_cle %}
+                <p class="muted">Désolé Bâtisseur, aucun membre ne porte le nom "{{ mot_cle }}".</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

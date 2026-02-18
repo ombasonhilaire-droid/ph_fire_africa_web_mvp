@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set title = "Discussion" %}
+{% block content %}
+<div class="card">
+  <div class="thread-head">
+    <div>
+      <h2>{{ other.display_name }}</h2>
+      <div class="muted">@{{ other.username }}</div>
+    </div>
+    <a class="btn btn-ghost" href="{{ url_for('profile', username=other.username) }}">Voir profil</a>
+  </div>
+</div>
+
+<div class="card chat">
+  {% for m in messages %}
+    {% if m.sender_username == me.username %}
+      <div class="msg msg-me">
+        <div class="msg-bubble">{{ m.content }}</div>
+        <div class="muted small">{{ m.created_at }}</div>
+      </div>
+    {% else %}
+      <div class="msg msg-other">
+        <div class="msg-bubble">{{ m.content }}</div>
+        <div class="muted small">{{ m.created_at }}</div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="card">
+  <form class="chat-send" method="post">
+    <input name="content" placeholder="Écrire un message..." autocomplete="off">
+    <button class="btn" type="submit">Envoyer</button>
+  </form>
+</div>
+{% endblock %}

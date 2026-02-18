@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set title = "Paramètres" %}
+{% block content %}
+<div class="card narrow">
+  <h2>Paramètres</h2>
+  <p class="muted">MVP: tu peux modifier ton nom affiché et ta bio.</p>
+
+  <form method="post">
+    <label>Nom affiché</label>
+    <input name="display_name" value="{{ user.display_name }}">
+
+    <label>Bio (max 280)</label>
+    <textarea name="bio" rows="4">{{ user.bio }}</textarea>
+
+    <button class="btn" type="submit">Enregistrer</button>
+  </form>
+
+  <div class="hr"></div>
+
+  <h3>À venir</h3>
+  <ul class="muted">
+    <li>Langues (Fr/En/Ar + langues africaines)</li>
+    <li>2FA / sécurité avancée</li>
+    <li>Paiements (M‑Pesa, Airtel Money, Orange Money...)</li>
+    <li>Marketplace, bibliothèque, IA, etc.</li>
+  </ul>
+</div>
+{% endblock %}

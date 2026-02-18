@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ APP_NAME }}{% if title %} • {{ title }}{% endif %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-dot" aria-hidden="true"></div>
+        <div>
+          <div class="brand-title">{{ APP_NAME }}</div>
+          <div class="brand-sub">Version Web • MVP</div>
+        </div>
+      </div>
+
+      {% if me %}
+      <nav class="nav">
+        <a href="/rechercher" style="color: #f1c40f; margin-right: 15px;">🔍 Chercher</a>
+        <a class="nav-item" href="{{ url_for('feed') }}">🏠 Accueil</a>
+        <a class="nav-item" href="{{ url_for('explore') }}">🧭 Explorer</a>
+        <a class="nav-item" href="{{ url_for('notifications') }}">
+          🔔 Notifications
+          {% if unread_notifications %}
+            <span class="badge">{{ unread_notifications }}</span>
+          {% endif %}
+        </a>
+        <a class="nav-item" href="{{ url_for('messages') }}">💬 Messagerie</a>
+        <a class="nav-item" href="{{ url_for('profile', username=me.username) }}">👤 Profil</a>
+        <a class="nav-item" href="{{ url_for('settings') }}">⚙️ Paramètres</a>
+      </nav>
+
+      <div class="me-card">
+        <div class="me-name">{{ me.display_name }}</div>
+        <div class="me-handle">@{{ me.username }}</div>
+        <div class="me-actions">
+          <a class="btn btn-ghost" href="{{ url_for('logout') }}">Déconnexion</a>
+        </div>
+      </div>
+      {% else %}
+      <div class="sidebar-cta">
+        <a class="btn" href="{{ url_for('signup') }}">Créer un compte</a>
+        <a class="btn btn-ghost" href="{{ url_for('login') }}">Se connecter</a>
+      </div>
+      {% endif %}
+
+      <div class="sidebar-footer">
+        <small>Thème: rose • Inspiré d’un réseau social moderne.</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+          <div class="flash-wrap">
+            {% for category, msg in messages %}
+              <div class="flash flash-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

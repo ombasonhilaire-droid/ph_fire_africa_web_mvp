@@ -1,0 +1,20 @@
+# Ne pas envoyer la base de données (elle contient tes secrets et tests)
+instance/
+*.db
+
+# Ne pas envoyer l'environnement virtuel (trop lourd, inutile sur GitHub)
+.venv/
+venv/
+env/
+
+# Ne pas envoyer les fichiers temporaires de Python
+__pycache__/
+*.pyc
+
+# Ne pas envoyer les fichiers de configuration de ton éditeur
+.vscode/
+.idea/
+
+# Ne pas envoyer les images téléchargées par les utilisateurs (pour le test)
+static/uploads/*
+!static/uploads/.gitkeep
