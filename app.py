@@ -593,17 +593,32 @@ def create_app() -> Flask:
             db_execute("INSERT INTO posts(user_id, content, image_filename, created_at) VALUES (?, ?, ?, ?)",
                        (uid, content, img, utcnow_iso()))
     # MINE 
+
     @app.get("/stats-mine")
     @login_required
     def stats_mine():
-    # Action : READ (Lire)
-    # On compte le nombre total d'utilisateurs dans la base
-        resultat = db_one("SELECT COUNT(*) as total FROM users")
-        nombre_utilisateurs = resultat['total']
+        # 1. Action : Lire le nombre de bâtisseurs
+        res_users = db_one("SELECT COUNT(*) as total FROM users")
+        nombre_utilisateurs = res_users['total']
+        
+        # 2. Action : Calculer la somme totale des gains dans la mine
+        # On utilise SUM(total_earnings) pour additionner tous les portefeuilles
+        res_wealth = db_one("SELECT SUM(total_earnings) as richesse FROM wallets")
+        
+        # Si la mine est vide, richesse sera None, on force à 0.0
+        richesse_totale = res_wealth['richesse'] if res_wealth['richesse'] else 0.0
+        
+        # 3. Réponse digne et riche
+        return f"""
+        <div style="font-family: sans-serif; padding: 20px; color: #f3f3f6; background: #0b0b10; border-radius: 15px;">
+            <h1 style="color: #ff2d8d;">📊 Rapport de la Mine PH FIRE AFRICA</h1>
+            <p style="font-size: 1.2em;">👷 <b>Bâtisseurs Debout :</b> {nombre_utilisateurs}</p>
+            <p style="font-size: 1.2em; color: #2bd576;">💰 <b>Richesse Totale Créée :</b> {richesse_totale:.2f} $</p>
+            <hr style="border: 0.5px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 0.9em; color: #a7a7b4;"><i>"Le savoir produit une valeur que personne ne peut voler."</i></p>
+        </div>
+        """
     
-        return f"<h1>Rapport de la Mine</h1><p>Il y a actuellement <b>{nombre_utilisateurs}</b> bâtisseurs debout sur PH FIRE AFRICA !</p>"
-
-
     # run demo seed once (only when empty)
     @app.before_request
     def _auto_seed_once():
